@@ -6,24 +6,28 @@ const resolvers = {
     Query: {
         me: async (parent,args,context) => {
             if(context.user) {
-                try {
+                try { 
+                    // find user though id
                     const user = await User.findOne({_id:context.user._id});
                     return user; 
                 } catch (error) {
                     console.log('User not found', error);
                 }
-            }
+            } 
+            // throw error if user is not logged in
             throw new AuthenticationError('You must log in')
         },
     },
 
     Mutation: {
         login: async (parent, {email, password}) => {
-            try {
+            try { 
+                //find user through email 
                 const user = await User.findOne({email});
                 if (!user) {
                     throw new AuthenticationError('No user found with this email adress');
                 }
+                //verify if user password is correct
                 const correctPW = await user.isCorrectPassword(password);
                 if(!correctPW){
                     throw new AuthenticationError('Incorrect Password, try again');
@@ -34,7 +38,7 @@ const resolvers = {
                 console.log('Error Loging in', error);
             }
         },
-
+        //creates user from input values 
         addUser: async (parent, { usernam, email, password }) => {
             try {
                 const user = await User.create({ username, email, password });
@@ -44,7 +48,7 @@ const resolvers = {
                 console.log('Error signing up', error);
             }
         },
-
+        // save book to user 
         saveBook: async (parent, { bookToSave }, context) => {
             if (context.user) {
                 try {
@@ -60,7 +64,7 @@ const resolvers = {
             }
             throw new AuthenticationError('Please log in');
         },
-
+        // delete book from user 
         removeBook: async (parent, {bookId}, context) => {
             if (context.user) {
                 try {
@@ -74,6 +78,7 @@ const resolvers = {
                     console.log('Failed to remove book', error);
                 }
             }
+            // throw error if user is not logged in 
             throw new AuthenticationError('Please log in')
         },
     },
