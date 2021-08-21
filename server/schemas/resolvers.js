@@ -38,8 +38,8 @@ const resolvers = {
                 console.log('Error Loging in', error);
             }
         },
-        //creates user from input values 
-        addUser: async (parent, { usernam, email, password }) => {
+        //creates user from input values  
+        addUser: async (parent, { username, email, password }) => {
             try {
                 const user = await User.create({ username, email, password });
                 const token = signToken(user);
